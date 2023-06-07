@@ -1,5 +1,5 @@
-# hijack-discord-selfbot
-Discord selfbot with a custom websockets and requests library.
+# hijack-discord-selfbot + GUI
+Discord selfbot with a custom websockets and requests library, and has a simple modern GUI
 
 ## **DISCLAIMER**
 
