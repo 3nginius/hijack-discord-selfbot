@@ -1,7 +1,8 @@
 # hijack-discord-selfbot
 Discord selfbot with a custom websockets and requests library.
 
-DISCLAIMER;
+## **DISCLAIMER**
+
 This selfbot was made for educational purposes and can be only used and edited for educational purposes.
 
 It is showing how Discord Gateway & API is used in process without any extra library such as discord.py, discord.py-self etc.
@@ -9,7 +10,9 @@ It is showing how Discord Gateway & API is used in process without any extra lib
 Hijack selfbot is aimed for best performance, has better code execution and structure in terms of command decorating.
 
 
-INSTALLATION;
+
+## **INSTALLATION**
+
 Needed Python 3.8 or higher.
 
 Step 1: Download the repository
@@ -29,16 +32,16 @@ Step 3: Start the application
 - Click on start.bat and start the application
 
 
-GUI:
+
+## **GUI**
 
 ![image](https://github.com/3nginius/hijack-discord-selfbot/assets/135216042/07c05cf2-35f8-4b85-ac1e-94f7025dfa44)
 
 
-Existing Commands;
 
-Commands
+## **Existing Commands**
 
-General
+**General**
 
  - help: Shows all commands with their descriptions or shows help for a specific command.
  - esnipe: Snipe last edited message. (Best sniper on market)
@@ -46,7 +49,7 @@ General
  - restart: Restarts the bot.
  - ping: Checks the bot's latency, this calculates the speed of code execution and message edit speed. (Fastest command execution)
  
-Fun
+**Fun**
 
  - edit: Edits the last message.
  - animate: Animates a text.
@@ -59,7 +62,7 @@ Fun
  - dog: Get a random dog picture.
 
 
-Utility
+**Utility**
 
  - info: Gets information about a user.
  - avatar: Returns user's avatar, banner decoration.
@@ -75,7 +78,7 @@ Utility
  - spy_list: List all spies.
 
 
-Requests
+**Requests**
 
  - gpt: Asks GPT-3 a question.
  - rscrape: Get a random image post from a specific subreddit.
