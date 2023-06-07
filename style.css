@@ -1,0 +1,565 @@
+body {
+    background: #151515;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .container {
+    display: flex;
+    align-items: flex-start;
+  }
+  .tabs {
+    display: flex;
+    flex-direction: column;
+    background: #202020;
+    width: 150px;
+    height: calc(100% - 30px);
+    padding: 20px;
+    position: fixed;
+    top: 43px;
+    left: 0;
+    bottom: 0;
+  }
+  .tab {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 2px;
+    background: #007BFF;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  .tab.active {
+    background: #555;
+    transform: scale(1.05);
+  }
+  .tab:hover {
+    background-color: #555;
+  }
+  .tab.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .content {
+    width:  500px;
+    height: 500px;
+    padding-top: 20px;
+    margin-left: 120px;
+  }
+  input[type='text'] {
+    font-size: 18px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #333;
+    color: #fff;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  input[type='password'] {
+    font-size: 18px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #333;
+    color: #fff;
+    width: 96%;
+    margin-bottom: 15px;
+  }
+  button {
+    font-size: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background: #007BFF;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  button:disabled {
+    background: #555;
+    cursor: not-allowed;
+  }
+  button:hover {
+    background-color: #555;
+  }
+  #botName {
+    margin-top: 20px;
+    font-size: 30px;
+    color: #28a745;
+  }
+  #statusLabel {
+    margin-top: 10px;
+    font-size: 20px;
+    color: #f0ad4e;
+  }
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
+  #userPanel {
+    background: #007BFF;
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  #userPanel:hover {
+    background-color: #0056b3;
+  }
+  #userAvatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 2px solid #fff;
+  }
+  #userContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  #userInfo {
+    font-size: 18px;
+    text-align: right;
+    padding-top: 10px;
+    user-select: text !important;
+  }
+  .window-buttons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+  }
+  .window-button {
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+    background-color: #ac3b3b;
+    border-radius: 50%;
+    border: 1px solid #646464;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .window-button:hover {
+    background-color: #660000;
+  }
+  .window-button.minimize {
+    background-color: #fdbc40;
+  }
+  .window-button.minimize:hover {
+    background-color: #d18016;
+  }
+  #console {
+    max-height: 400px;
+    width: 550px;
+    height: 400px;
+    overflow-y: auto;
+    background-color: #000;
+    color: #fff;
+    padding: 5px;
+    box-sizing: border-box;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 12px;
+    line-height: 1.3;
+    white-space: pre-wrap;
+    position: relative;
+    border: 2px solid #3c4249;
+    border-radius: 5px;
+  }
+  #console::-webkit-scrollbar {
+    width: 8px;
+    background-color: #111;
+  }
+  #console::-webkit-scrollbar-thumb {
+    background-color: #007BFF;
+    border-radius: 4px;
+  }
+  #console::selection {
+    background-color: #007BFF;
+    color: #fff;
+  }
+  .console-message {
+    animation: slideIn 0.5s;
+    position: relative;
+    padding: 5px;
+    word-break: break-word;
+    user-select: text !important;
+  }
+  .console-message:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  .console-message:nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .console-message::before {
+    content: '>';
+    position: absolute;
+    left: -5px;
+    top: 3;
+    color: #007BFF;
+  }
+  .console-message:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  .dm {
+    color: rgb(147, 211, 30);
+  }
+
+  .server {
+    color: rgb(235, 140, 16);
+  }
+
+  .relationship {
+    color: rgb(250, 14, 238);
+  }
+
+  .notifications {
+    color: rgb(206, 135, 117);
+  }
+  
+  .error {
+    color: rgb(255, 54, 4);
+  }
+
+  .spy {
+    color: rgb(11, 125, 145);
+  }
+
+  .success {
+    color: rgb(8, 250, 20);
+  }
+
+  .deleted {
+    color: rgb(234, 250, 8);
+  }
+
+  .updated {
+    color: rgb(234, 250, 8);
+  }
+  @keyframes slideIn {
+    0% {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .info-panel {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .info-label {
+    display: inline-block;
+    margin-right: 1px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-weight: bold;
+  }
+
+  .dm-label {
+    background-color: rgb(147, 211, 30);
+    color: #000;
+  }
+
+  .server-label {
+    background-color: rgb(235, 140, 16);
+    color: #000;
+  }
+
+  .notification-label {
+    background-color: rgb(206, 135, 117);
+    color: #000;
+  }
+  
+  .error-label {
+    background-color: rgb(255, 54, 4);
+    color: #fff;
+  }
+
+  .success-label {
+    background-color: rgb(8, 250, 20);
+    color: #000;
+  }
+
+  .delete-label {
+    background-color: rgb(234, 250, 8);
+    color: #000;
+  }
+
+  .update-label {
+    background-color: rgb(234, 250, 8);
+    color: #000;
+  }
+
+  .checkbox {
+    display: inline-block;
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+  }
+
+  .checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border-radius: 50%;
+  }
+
+  .checkbox:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+
+  .checkbox input:checked ~ .checkmark {
+    background-color: #007BFF;
+  }
+
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  .checkbox input:checked ~ .checkmark:after {
+    display: block;
+  }
+
+  .checkbox .checkmark:after {
+    top: 6px;
+    left: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+  }
+
+  .dropdown select {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #333;
+    color: #fff;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .dropdown select::-ms-expand {
+    display: none;
+  }
+
+  .dropdown::before {
+    content: "";
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #fff;
+  }
+
+  #userBadgesContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    background-color: #0a0a0a;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px 2px rgba(0, 255, 255, 0.5);
+  }
+
+
+  .userBadge {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 12px;
+    background-color: #fff;
+    color: #000;
+  }
+
+  .notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #004c63;
+    color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s, visibility 0.5s;
+  }
+
+  .notification.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #dragHandle {
+    width: 800px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #131313;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #007BFF;
+  }
+
+  #consoleTab.flash {
+    background-color: #ff6a06;
+  }
+
+  a {
+    text-decoration: none;
+    color: rgb(231, 200, 200);
+  }
+
+  a:hover, a:visited, a:active {
+    color: rgb(255, 255, 255);
+  }
+
+  #startButton {
+    float: right;
+  }
+
+  #userNameInfo {
+    margin-left: 10px;
+    font-size: 18px;
+    flex-basis: 100%;
+    margin-top: 10px;
+    user-select: text !important;
+  }
+
+  .relationships {
+    max-height: 400px;
+    width: 550px;
+    height: 400px;
+    overflow-y: auto;
+    background-color: #000;
+    color: #fff;
+    padding: 5px;
+    box-sizing: border-box;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 12px;
+    line-height: 1.3;
+    white-space: pre-wrap;
+    position: relative;
+    border: 2px solid #3c4249;
+    border-radius: 5px;
+  }
+  h2 {
+    color: #d4d4d4;
+  }
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  li {
+    background-color: #141414;
+    margin: 5px 0;
+    padding: 2px;
+    border-radius: 5px;
+  }
+  .relationships::-webkit-scrollbar {
+    width: 8px;
+    background-color: #111;
+  }
+  .relationships::-webkit-scrollbar-thumb {
+    background-color: #007BFF;
+    border-radius: 4px;
+  }
+  .relationships::selection {
+    background-color: #007BFF;
+    color: #fff;
+  }
+
+  button.removeButton {
+    background-color: red !important;
+    color: white !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 2px 5px !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 12px !important;
+    margin: 4px 2px !important;
+    transition-duration: 0.3s !important;
+    border-radius: 5px !important;
+    margin-left: 10px !important;
+  }
+
+  button.removeButton:hover {
+    background-color: #555 !important;
+    color: white !important;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  .modal-content {
+    background-color: #202020;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }

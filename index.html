@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Discord Bot GUI</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body oncontextmenu="return false;">
+    <div id="dragHandle" class="pywebview-drag-region">
+      <p style="color:#ffffff">Hijack Self-Bot</p>
+      <!-- This is the only area from which the window can be dragged -->
+    </div> 
+    <div class="container">
+           
+      <div class="window-buttons">
+        <div class="window-button minimize" onclick="minimizeWindow()"></div>
+        <div class="window-button" onclick="closeWindow()"></div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="showTab('connectionTab', this)"><ion-icon name="wifi"></ion-icon> Connection</div>
+        <div id="consoleTab" class="tab" onclick="showTab('tab2', this)"><ion-icon name="cube"></ion-icon> Console </div>
+        <div id="settingsTab" class="tab disabled" onclick="showTab('tab3', this)"><ion-icon name="build"></ion-icon> Settings</div>
+        <div id="activityTab" class="tab disabled" onclick="showTab('tab4', this)"><ion-icon name="bulb"></ion-icon> Activity</div>
+        <div id="webhookTab" class="tab disabled" onclick="showTab('tab5', this)"><ion-icon name="logo-web-component"></ion-icon> Webhook</div>
+        <div id="relationshipsTab" class="tab disabled" onclick="showTab('tab6', this), Relationships()"><ion-icon name="accessibility-outline"></ion-icon> Relationships</div>
+        <div class="disabled"><ion-icon name="hourglass"></ion-icon> <span id="uptimeLabel">Uptime: NULL</span> </div>
+      </div>
+
+      <div class="content">
+
+        <div id="connectionTab" class="tab-content active">
+          <input type="password" id="tokenInput" placeholder="Enter your account token.">
+          <button id="startButton" onclick="startBot()">Start Bot</button>
+          <div id="botName"></div>
+          <div id="statusLabel">Status: Disconnected</div>
+          <div id="userPanel" style="display:none; margin-top: 10px;">
+            <div id="userContainer">
+              <img id="userAvatar" src="" alt="User Avatar">
+              <span id="userBadgesContainer"></span>
+              <span id="userNameInfo"></span>
+            </div>
+            <div id="userInfo"></div>
+          </div>
+        </div>
+
+        <div id="tab2" class="tab-content">
+          <input type="text" id="searchInput" onkeyup="filterMessages()" placeholder="Search something..">
+          <div id="console" onscroll="handleScroll(this)">
+            <!-- Console messages will appear here -->
+          </div>
+          <button id="clearButton" style="margin-top:10px;" onclick="clearConsole()">Clear Console</button>
+        </div>
+
+        <div id="tab3" class="tab-content">
+          <div class="settings">
+            <label for="prefix" style="color:#d18016">Bot Prefix</label><br>
+            <div class="dropdown" style="margin-top: 10px;">
+              <select id="prefix" onchange="updatePrefix()">
+                <option value="!">!</option>
+                <option value=",">,</option>
+                <option value=".">.</option>
+                <option value="?">?</option>
+                <option value="+">+</option>
+                <option value="-">-</option>
+              </select>
+            </div><br>
+          </div>
+
+          <div class="settings" style="margin-top: 20px;">
+            <label style="color:#d18016">Console Messages</label><br>
+            <label class="checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="serverCheckbox" onchange="updateConsoleOption()">
+              <span class="checkmark"></span>
+              Show server messages.
+            </label><br>
+            <label class="checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="dmCheckbox" onchange="updateConsoleOption()">
+              <span class="checkmark"></span>
+              Show direct messages.
+            </label><br>
+            <label class="checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="updateCheckbox" onchange="updateConsoleOption()">
+              <span class="checkmark"></span>
+              Show updated messages.
+            </label><br>
+            <label class="checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="deleteCheckbox" onchange="updateConsoleOption()">
+              <span class="checkmark"></span>
+              Show deleted messages.
+            </label><br>
+            <label class="checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="botCheckbox" onchange="updateConsoleOption()">
+              <span class="checkmark"></span>
+              Show bot messages.
+            </label>
+          </div>
+
+          <div class="settings" style="margin-top: 20px;">
+            <label for="status" style="color:#d18016">User Status</label><br>
+            <div class="dropdown" style="margin-top: 10px;">
+                <select id="status" onchange="updateStatus()">
+                    <option value="online">Online</option>
+                    <option value="dnd">Do Not Disturb</option>
+                    <option value="idle">Idle</option>
+                    <option value="invisible">Invisible</option>
+                    <option value="offline">Offline</option>
+                </select>
+            </div><br>
+          </div>
+        </div>
+
+        <div id="tab4" class="tab-content">
+          <div class="settings">
+            <label for="game_name" style="color:#d18016;">Activity Name</label><br>
+            <input id="game_name" type="text" style="margin-top: 10px;" value="NULL"><br>
+        
+            <label for="game_type" style="color:#d18016">Activity Type</label><br>
+            <div class="dropdown" style="margin-top: 10px;">
+                <select id="game_type">
+                    <option value="None">None</option>
+                    <option value="0">Playing</option>
+                    <option value="1">Streaming</option>
+                    <option value="2">Listening</option>
+                    <option value="3">Watching</option>
+                </select>
+            </div><br>
+            <button onclick="updateStatus()" style="margin-top: 10px;">Update Activity</button>
+          </div>
+        </div>
+
+        <div id="tab5" class="tab-content">
+          <div class="settings">
+
+            <label for="webhook_url" style="color:#d18016;">Webhook URL</label><br>
+            <input id="webhook_url" type="text" style="margin-top: 10px;" value="NULL"><br>
+
+            <label style="color:#d18016">Webhook Notifications</label><br>
+            <label class="checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="onBotActivationWebHook">
+              <span class="checkmark"></span>
+              Send webhook on bot connection.
+            </label><br>
+            <label class="checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="onMessageUpdate">
+              <span class="checkmark"></span>
+              Send webhook on updated message.
+            </label><br>
+            <label class="checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="onMessageDelete">
+              <span class="checkmark"></span>
+              Send webhook on deleted message.
+            </label>
+
+            <button onclick="updateWebhook()" style="margin-top: 10px;">Save Webhook Settings</button>
+          </div>
+        </div>
+
+        <div id="tab6" class="tab-content">
+          <input type="text" id="relationshipSearchInput" onkeyup="filterRelationships()" placeholder="Search something..">
+          <div class="relationships">
+            Loading...
+          </div>
+          <div id="relationshipTotal"></div>
+        </div>
+
+      </div>
+      <div id="notification" class="notification">
+        <p id="notificationMessage"></p>
+      </div>
+
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <p id="modalText">Are you sure you want to remove this user?</p>
+          <button id="yesButton">Yes</button>
+          <button id="noButton">No</button>
+        </div>
+      </div>
+
+    </div>
+    <script>
+        const Discord_Employee = 1;
+        const Partnered_Server_Owner = 2;
+        const HypeSquad_Events = 4;
+        const Bug_Hunter_Level_1 = 8;
+        const House_Bravery = 64;
+        const House_Brilliance = 128;
+        const House_Balance = 256;
+        const Early_Supporter = 512;
+        const Bug_Hunter_Level_2 = 16384;
+        const Early_Verified_Bot_Developer = 131072;
+        const Active_Developer = 4194304;
+
+        function showTab(tabId, element) {
+          var tabs = document.getElementsByClassName('tab');
+          for (var i = 0; i < tabs.length; i++) {
+              tabs[i].classList.remove('active');
+          }
+          element.classList.add('active');
+
+          var contents = document.getElementsByClassName('tab-content');
+          for (var i = 0; i < contents.length; i++) {
+              contents[i].classList.remove('active');
+          }
+
+          var selectedContent = document.getElementById(tabId);
+          selectedContent.classList.add('active');
+        }
+
+        function startBot() {
+          var uptimeLabel = document.getElementById('uptimeLabel');
+          var token = document.getElementById('tokenInput').value;
+          var startButton = document.getElementById('startButton');
+          var statusLabel = document.getElementById('statusLabel');
+          var botName = document.getElementById('botName');
+          var userPanel = document.getElementById('userPanel');
+          var userAvatar = document.getElementById('userAvatar');
+          var userBadgesContainer = document.getElementById('userBadgesContainer');
+          var userNameInfo = document.getElementById('userNameInfo')
+          var userInfo = document.getElementById('userInfo');
+          var settingsTab = document.getElementById('settingsTab');
+          var activityTab = document.getElementById('activityTab');
+          var webhookTab = document.getElementById('webhookTab');
+          var relationshipsTab = document.getElementById('relationshipsTab');
+
+          startButton.disabled = true;
+          statusLabel.innerText = "Status: Connecting...";
+
+          pywebview.api.startBot(token).then(function(data) {
+              if (data.error) {
+                  botName.innerText = "Invalid Token";
+                  botName.style.color = "red";
+                  startButton.disabled = false;
+                  statusLabel.innerText = "Status: Disconnected";
+                  userPanel.style.display = "none";
+              } else {
+                  startButton.style.display = 'none';
+                  pywebview.api.updateTokenInfo(token);
+                  botName.innerText = "";
+                  statusLabel.innerText = "Status: Connected";
+                  settingsTab.classList.remove('disabled');
+                  activityTab.classList.remove('disabled');
+                  webhookTab.classList.remove('disabled');
+                  relationshipsTab.classList.remove('disabled');
+                  if (data.avatar) {
+                      userAvatar.src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar;
+                  } else {
+                      userAvatar.src = "https://media.discordapp.net/attachments/1112035909332914307/1112359402385702932/discordblue.png";
+                  }
+                  displayBadges(data);
+                  userNameInfo.innerHTML = data.username + "#" + data.discriminator + "<br>";
+                  userInfo.innerHTML += "ID: " + data.id + "<br>";
+                  userInfo.innerHTML += "Email: " + data.email + "<br>";
+                  userInfo.innerHTML += "Creation Date: " + getDiscordCreationTime(data.id) + "<br>";
+                  
+                  userPanel.style.display = "block";
+                  document.getElementById('tokenInput').disabled = true;
+                  var startTime = new Date().getTime();
+
+                  setInterval(function() {
+                    var currentTime = new Date().getTime();
+                    var uptime = currentTime - startTime;
+                    var seconds = Math.floor(uptime / 1000) % 60;
+                    var minutes = Math.floor(uptime / (1000 * 60)) % 60;
+                    var hours = Math.floor(uptime / (1000 * 60 * 60)) % 24;
+                    var days = Math.floor(uptime / (1000 * 60 * 60 * 24));
+
+                    var uptimeString = "";
+                    if (days > 0) {
+                      uptimeString += days + "d ";
+                    }
+                    if (hours > 0) {
+                      uptimeString += hours + "h ";
+                    }
+                    if (minutes > 0) {
+                      uptimeString += minutes + "m ";
+                    }
+                    uptimeString += seconds + "s";
+
+                    uptimeLabel.innerText = "Uptime: " + uptimeString;
+                  }, 1000);
+              }
+          });
+        }
+
+        function getDiscordCreationTime(user_id) {
+          const discord_epoch = 1420070400000n;
+          const creation_time = ((BigInt(user_id) >> 22n) + discord_epoch) / 1000n;
+
+          const creation_time_number = Number(creation_time);
+
+          return new Date(creation_time_number * 1000).toUTCString();
+        }
+
+        function minimizeWindow() {
+            pywebview.api.minimize_window();
+        }
+
+
+        function closeWindow() {
+            pywebview.api.close_window();
+        }
+
+
+        function handleScroll(element) {
+         
+        }
+
+
+        let input = document.getElementById('searchInput');
+
+        function matchesFilter(msg) {
+          let filter = input.value.toUpperCase();
+          return msg.innerHTML.toUpperCase().indexOf(filter) > -1;
+        }
+
+        function printToConsole(message) {
+          var consoleDiv = document.getElementById('console');
+          var messageDiv = document.createElement('div');
+          messageDiv.innerHTML = message;
+          messageDiv.classList.add('console-message');
+          
+          if (matchesFilter(messageDiv)) {
+              messageDiv.style.display = "";
+          } else {
+              messageDiv.style.display = "none";
+          }
+          
+          consoleDiv.appendChild(messageDiv);
+
+          var isScrolledToBottom = consoleDiv.scrollHeight - consoleDiv.clientHeight <= consoleDiv.scrollTop + 600;
+
+          if (isScrolledToBottom) {
+              consoleDiv.scrollTop = consoleDiv.scrollHeight;
+          }
+        }
+
+
+        function filterMessages() {
+          let consoleDiv = document.getElementById('console');
+          let messages = consoleDiv.getElementsByClassName('console-message');
+
+          for (let i = 0; i < messages.length; i++) {
+            let msg = messages[i];
+
+            if (matchesFilter(msg)) {
+              msg.style.display = "";
+            } else {
+              msg.style.display = "none";
+            }
+          }
+
+          for (let i = messages.length - 1; i >= 0; i--) {
+            if (messages[i].style.display !== "none") {
+              messages[i].scrollIntoView();
+              break;
+            }
+          }
+        }
+
+        input.onkeyup = filterMessages;
+
+
+        function clearConsole() {
+          var consoleDiv = document.getElementById('console');
+          consoleDiv.innerHTML = '';
+          consoleDiv.style.height = '400px';
+        }
+
+
+        function updatePrefix() {
+          var prefix = document.getElementById('prefix').value;
+          pywebview.api.updatePrefix(prefix);
+          showNotification('Updated Settings');
+        }
+
+
+        function updateConsoleOption() {
+          var serverCheckbox = document.getElementById('serverCheckbox').checked;
+          var dmCheckbox = document.getElementById('dmCheckbox').checked;
+          var updateCheckbox = document.getElementById('updateCheckbox').checked;
+          var deleteCheckbox = document.getElementById('deleteCheckbox').checked;
+          var botCheckbox = document.getElementById('botCheckbox').checked;
+          
+          pywebview.api.updateConsoleOption(serverCheckbox, dmCheckbox, updateCheckbox, deleteCheckbox, botCheckbox);
+          showNotification('Updated Settings!');
+        }
+
+
+        function updateStatus() {
+          var status = document.getElementById("status").value;
+          var game_name = document.getElementById("game_name").value;
+          var game_type = document.getElementById("game_type").value;
+          var game = {
+              'name': game_name, 
+              'type': parseInt(game_type)
+          };
+          pywebview.api.update_status(status, game);
+          showNotification("Activity Updated!")
+        }
+
+
+        function Relationships() {
+          pywebview.api.get_relationships().then(function(relationships) {
+              let relationshipsDiv = document.querySelector(".relationships");
+              let relationshipTotalDiv = document.getElementById("relationshipTotal")
+
+              relationshipsDiv.innerHTML = "";
+              relationshipTotalDiv.innerHTML = "";
+
+              for (let type in relationships.relationship_counts) {
+                  relationshipTotalDiv.innerHTML += `<br><span style="margin-bottom:2px;">${type.charAt(0).toUpperCase() + type.slice(1)}: ${relationships.relationship_counts[type]}</span>`;
+              }
+
+              for (let type in relationships.detailed_relationships) {
+                  let heading = document.createElement("h2");
+                  heading.innerText = type.charAt(0).toUpperCase() + type.slice(1); // capitalize type
+
+                  let list = document.createElement("ul");
+
+                  for (let relationship of relationships.detailed_relationships[type]) {
+                    let listItem = document.createElement("li");
+                    listItem.id = "relationship-" + relationship.id;
+
+                    let profileLink = document.createElement("a");
+                    profileLink.href = relationship.link;
+                    profileLink.target = "_blank";
+                    
+                    profileLink.innerText = `[${type.charAt(0).toUpperCase() + type.slice(1)}] ${relationship.username}#${relationship.discriminator}`;
+
+                    let removeButton = document.createElement("button");
+                    removeButton.className = "removeButton";
+                    removeButton.innerText = "Remove";
+                    removeButton.onclick = function() {
+                        confirmRemoval(profileLink.innerText, relationship.id);
+                    };
+
+                    listItem.appendChild(profileLink);
+                    listItem.appendChild(removeButton);
+                    list.appendChild(listItem);
+                  }
+
+                  relationshipsDiv.appendChild(heading);
+                  relationshipsDiv.appendChild(list);
+              }
+          });
+        }
+
+
+
+        let modal = document.getElementById("myModal");
+        let yesButton = document.getElementById("yesButton");
+        let noButton = document.getElementById("noButton");
+
+        function confirmRemoval(username, id) {
+          document.getElementById("modalText").innerText = `Are you sure you want to remove ${username}?`;
+
+          modal.style.display = "block";
+
+          yesButton.onclick = function() {
+            pywebview.api.deleteRelationship(id).then(function() {
+              modal.style.display = "none";
+              var listItem = document.getElementById("relationship-" + id);
+              if (listItem) {
+                listItem.remove();
+              }
+            });
+          }
+
+          noButton.onclick = function() {
+            modal.style.display = "none";
+          }
+        }
+
+
+
+        function filterRelationships() {
+          let filter = document.getElementById('relationshipSearchInput').value.toUpperCase();
+
+          let items = document.querySelector('.relationships').getElementsByTagName('li');
+
+          for (let i = 0; i < items.length; i++) {
+            let txtValue = items[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              items[i].style.display = "";
+            } else {
+              items[i].style.display = "none";
+            }
+          }
+        }
+
+
+        function updateWebhook() {
+          var url = document.getElementById("webhook_url").value;
+          var on_connect = document.getElementById("onBotActivationWebHook").checked
+          var on_update = document.getElementById("onMessageUpdate").checked
+          var on_delete = document.getElementById("onMessageDelete").checked
+          pywebview.api.updateWebhook(url, on_connect, on_update, on_delete);
+          showNotification("Webhook Settings Updated!")
+        }
+
+
+        function displayBadges(data) {
+          var badges = [];
+          var userBadgesContainer = document.getElementById('userBadgesContainer');
+
+          userBadgesContainer.innerHTML = '';
+
+          var badgeDetails = [
+              { flag: Discord_Employee, svg: 'discordstaff.svg', name: 'Discord Employee' },
+              { flag: Partnered_Server_Owner, svg: 'discordpartner.svg', name: 'Partnered Server Owner' },
+              { flag: HypeSquad_Events, svg: 'hypesquadevents.svg', name: 'HypeSquad Events' },
+              { flag: Bug_Hunter_Level_1, svg: 'discordbughunter1.svg', name: 'Bug Hunter Level 1' },
+              { flag: House_Bravery, svg: 'hypesquadbravery.svg', name: 'House Bravery' },
+              { flag: House_Brilliance, svg: 'hypesquadbrilliance.svg', name: 'House Brilliance' },
+              { flag: House_Balance, svg: 'hypesquadbalance.svg', name: 'House Balance' },
+              { flag: Early_Supporter, svg: 'discordnitro.svg', name: 'Early Supporter' },
+              { flag: Bug_Hunter_Level_2, svg: 'discordbughunter2.svg', name: 'Bug Hunter Level 2' },
+              { flag: Early_Verified_Bot_Developer, svg: 'discordbotdev.svg', name: 'Early Verified Bot Developer' },
+              { flag: Active_Developer, svg: 'activedeveloper.svg', name: 'Active Developer' }
+          ];
+
+          if (data.premium_type == 1 || data.premium_type == 2 || data.premium_type == 3) {
+            var badgeElement = document.createElement('img');
+            badgeElement.classList.add('badge');
+            badgeElement.src = 'badges/discordnitro.svg';
+            badgeElement.alt = "Nitro Subscription";
+            badgeElement.title = "Nitro Subscription";
+            badgeElement.style.width = '24px';
+            badgeElement.style.height = '24px';
+            userBadgesContainer.appendChild(badgeElement);
+          }
+
+          badgeDetails.forEach(function(badgeDetail) {
+              if ((data.public_flags & badgeDetail.flag) == badgeDetail.flag) {
+                  var badgeElement = document.createElement('img');
+                  badgeElement.classList.add('badge');
+                  badgeElement.src = 'badges/' + badgeDetail.svg;
+                  badgeElement.alt = badgeDetail.name;
+                  badgeElement.title = badgeDetail.name; 
+                  badgeElement.style.width = '24px'; 
+                  badgeElement.style.height = '24px'; 
+                  userBadgesContainer.appendChild(badgeElement);
+              }
+          });
+
+          if (userBadgesContainer.childElementCount === 0) {
+              var noBadgesElement = document.createElement('span');
+              noBadgesElement.classList.add('no-badges');
+              noBadgesElement.innerText = 'No badges';
+              userBadgesContainer.appendChild(noBadgesElement);
+          }
+        }
+
+        function showNotification(message) {
+          var notification = document.getElementById('notification');
+          var notificationMessage = document.getElementById('notificationMessage');
+
+          notificationMessage.textContent = message;
+          notification.classList.add('show');
+
+          setTimeout(function() {
+              notification.classList.remove('show');
+          }, 2000);
+        }
+
+        var consoleTabElement = document.getElementById('consoleTab');
+
+        consoleTabElement.addEventListener('click', function() {
+          var consoleDiv = document.getElementById('console');
+          consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        });
+
+
+        var consoleElement = document.getElementById('console');
+        var tab2Element = document.getElementById('consoleTab');
+
+        var observer = new MutationObserver(function(mutations) {
+            if (!tab2Element.classList.contains('active')) {
+                tab2Element.classList.add('flash');
+                setTimeout(function() {
+                    tab2Element.classList.remove('flash');
+                }, 1000); 
+            }
+        });
+
+        var config = {
+            childList: true,
+            subtree: true
+        };
+
+        observer.observe(consoleElement, config);
+
+
+        function loadSettings() {
+          if (window.pywebview) {
+              pywebview.api.get_settings().then(function(settings) {
+                  document.getElementById('prefix').value = settings.prefix;
+                  document.getElementById('serverCheckbox').checked = settings.show_server_messages;
+                  document.getElementById('dmCheckbox').checked = settings.show_dm_messages;
+                  document.getElementById('updateCheckbox').checked = settings.show_updated_messages;
+                  document.getElementById('deleteCheckbox').checked = settings.show_deleted_messages;
+                  document.getElementById('botCheckbox').checked = settings.show_bot_messages;
+                  document.getElementById('tokenInput').value = settings.token_inf;
+              });
+              
+              pywebview.api.get_webhook_settings().then(function(webhook_settings) {
+                document.getElementById("webhook_url").value = webhook_settings.webhook_url;
+                document.getElementById("onBotActivationWebHook").checked = webhook_settings.on_connect;
+                document.getElementById("onMessageUpdate").checked = webhook_settings.on_updated_message;
+                document.getElementById("onMessageDelete").checked = webhook_settings.on_deleted_message;
+              });
+          } else {
+              setTimeout(loadSettings, 100);
+          }
+        }
+
+        window.onload = loadSettings;
+    </script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  </body>
+</html>
