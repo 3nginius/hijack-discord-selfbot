@@ -24,3 +24,8 @@ Step 2: Install dependencies
 Step 3: Start the application
 
 - Click on start.bat and start the application
+
+
+GUI:
+
+![image](https://github.com/3nginius/hijack-discord-selfbot/assets/135216042/07c05cf2-35f8-4b85-ac1e-94f7025dfa44)
