@@ -13,7 +13,7 @@ Hijack selfbot is aimed for best performance, has better code execution and stru
 
 ## **INSTALLATION**
 
-Needed Python 3.8 or higher.
+Needed Python 3.10 or higher.
 
 Step 1: Download the repository
 
